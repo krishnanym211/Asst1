@@ -12,12 +12,12 @@
 
 static char myBlock[4096];
 
-typedef struct Node{
-    
-}
+int dataInUse;
+short mallocErr;
+short freeErr;
 
 typedef struct metadata{
-    struct Node* next;
+    struct metadata* next;
     int size;
     char inUse;
 }metadata;
