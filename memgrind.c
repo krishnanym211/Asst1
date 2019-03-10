@@ -3,6 +3,25 @@
 
 #include "mymalloc.h"
 
+void testA(){
+	return;
+}
+void testB(){
+	return;
+}
+void testC(){
+	return;
+}
+void testD(){
+	return;
+}
+void testE(){
+	return;
+}
+void testF(){
+	return;
+}
+
 int main (int argc, char** argv){
     printf("sizeof metadata %d\n", sizeof(metadata));
     printf("Start of block: %d\n", myBlock);
