@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,6 +11,7 @@
 
 //#endif
 
+void* mymalloc(int size, char* file, int line);
 
 static char myBlock[4096];
 
@@ -21,8 +21,14 @@ short freeErr;
 
 typedef struct metadata{
     void* ptr;
-    struct metadata* next;
     int size;
     char inUse;
+    struct metadata* next;
 }metadata;
+
+//Function definitions
+
+void* mymalloc(int size, char* file, int line);
+
+
 

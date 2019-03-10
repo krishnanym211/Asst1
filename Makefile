@@ -1,4 +1,6 @@
 all:
-	gcc -c mymalloc.c && gcc -c memgrind.c && gcc mymalloc.o memgrind.o -o memgrind && ./memgrind
-mymalloc:
-	gcc mymalloc.c -o mymalloc
+	gcc -g -c mymalloc.c && gcc -g -c memgrind.c && gcc mymalloc.o memgrind.o -o memgrind
+run:
+	./memgrind
+malloc:
+	gcc -g mymalloc.c -o mymalloc
