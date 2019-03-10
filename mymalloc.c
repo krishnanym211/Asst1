@@ -85,7 +85,7 @@ void* mymalloc(int size, char* file, int line){
 
             //incase current block exactly fits size of reuested amount
             if((*temp).size == size){
-                printf("Found memory block of exact fit\n");
+                //UNCOMMENT printf("Found memory block of exact fit\n");
                 (*temp).inUse = 'y';
                 (*temp).ptr = &myBlock[currIndex(front, temp) + sizeof(metadata)];
                 return (*temp).ptr;
@@ -129,18 +129,19 @@ void* mymalloc(int size, char* file, int line){
 }
 
 /*//merges two or 3 consecutiive free blocks into 1
-void merge (){
+void merge (metadata* front){
     metadata* temp = front;
     metadata* prev;
     while ((*temp).next != NULL){
-        if((*prev).inUse == 'n' && ((*temp).inUse == 'n'){
-            (*prev).size += (*temp).size + sizeof(metadata));
+        if(((*prev).inUse == 'n') && ((*temp).inUse == 'n')){
+            (*prev).size += (*temp).size + sizeof(metadata);
+            (*prev).ptr = &myBlock[currIndex(front, prev) + sizeof(metadata)];
             (*prev).next = (*temp).next;
         }
         prev = temp;
         temp = (*temp).next;
     }
-    merge();
+    merge(front);
     return;
 }*/
 
@@ -169,7 +170,7 @@ void myfree(void* toFree, char* file, int line){
 
         if(currBlock->ptr == toFree && currBlock->inUse == 'y'){
             currBlock->inUse = 'n';
-            printf("Freed pointer - %p\n", toFree);
+             //UNCOMMENT printf("Freed pointer - %p\n", toFree);
             return;
         }
 
@@ -180,6 +181,6 @@ void myfree(void* toFree, char* file, int line){
 
     fprintf(stderr, "Failed to free pointer: %p - Pointer was not allocated\n", toFree);
     
-    // merge();
-    
+    //merge(front);
+    return;
 }
