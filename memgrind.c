@@ -69,10 +69,8 @@ void deleteArrayItem( int index, int length, char ** array){
      int total = 0;
      char* input[50];
      
-     int mallocIndex = 0;
-     int freeindex = 0;
+     int mallocIndex = 0;;
      int mallocCounter = 0;
-     int success = 0;
      
      while (count < 100){
         clock_t start = clock(), diff;
@@ -91,18 +89,15 @@ void deleteArrayItem( int index, int length, char ** array){
                  mallocCounter++;
              }else{
                  //perform free
-                int index = rand_lim(0,mallocIndex-1);
+                 int index = rand_lim(0,mallocIndex-1);
                  free(input[index]);
                  char ** start = &input[0];
                  deleteArrayItem(index, mallocIndex, start);
                  mallocIndex--;
              }
          }
-         while(mallocIndex >0){
-             int index = rand_lim(0, mallocIndex - 1);
-             free(input[index]);
-             char ** start = &input[0];
-             deleteArrayItem(index, mallocIndex, start);
+         while(mallocIndex >= 0){
+             free(input[mallocIndex]);
             mallocIndex--;
          }
          diff = clock() - start;
