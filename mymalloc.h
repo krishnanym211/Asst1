@@ -12,11 +12,12 @@
 
 static char myBlock[4096];
 
-int dataInUse;
+short firstMalloc;
 short mallocErr;
 short freeErr;
 
 typedef struct metadata{
+    void* ptr;
     struct metadata* next;
     int size;
     char inUse;
