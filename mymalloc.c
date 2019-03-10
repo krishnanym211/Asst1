@@ -113,7 +113,3 @@ void* mymalloc(int size, char* file, int line){
     merge();
     
 }*/
-
-int main (){
-    return 0;
-}
