@@ -4,7 +4,6 @@
 #include "mymalloc.h"
 
 metadata* front;
-short firstMalloc = 1;
 
 //returns the last index of the block called on
 //returns index of block
@@ -37,9 +36,24 @@ void merge (){
     return;
 }*/
 
+//returns bool indicating if malloc has been called yet
+int firstMalloc(){
+
+//typecasts the start of the array to metadata*
+//if data signifies it belongs to metadata* then malloc has been called
+//Our code ensures if malloc has been called at least once, 
+// a block exists at index 0
+    metadata* block = (metadata*)myBlock;
+    
+    if(block->inUse == 'y' || block->inUse == 'n'){
+        return 0;
+    }
+    return 1;
+}
+
 void* mymalloc(int size, char* file, int line){
 
-    mallocErr = 0;
+    int mallocErr = 0;
     //if allocation size is equal to or less than 0, thats not valid
     if(size <= 0){
         fprintf(stderr,"ERROR: Must allocate more than 0 bytes\n");
@@ -53,7 +67,7 @@ void* mymalloc(int size, char* file, int line){
     }
     
     //incase this is the first time malloc has been called
-    if(firstMalloc == 1){
+    if(firstMalloc()){
         printf("First malloc\n");
         front = (metadata*)myBlock;
         (*front).inUse = 'y';
@@ -73,9 +87,6 @@ void* mymalloc(int size, char* file, int line){
         (*newBlock).next = NULL;
 
         (*front).next = newBlock;
-
-        firstMalloc = 0;
-        mallocErr = 0;
         
         return (*front).ptr;
     }
@@ -91,7 +102,6 @@ void* mymalloc(int size, char* file, int line){
             if((*temp).size == size){
                 printf("Found memory block of exact fit\n");
                 (*temp).inUse = 'y';
-                mallocErr = 0;
                 (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
                 return (*temp).ptr;
             }
@@ -121,7 +131,6 @@ void* mymalloc(int size, char* file, int line){
                 //how do i knwo the size of the memory for the new block. calculate each time?
                 (*newBlock).inUse = 'n';
                 (*newBlock).ptr = &myBlock[currIndex(newBlock)+sizeof(metadata)];
-                mallocErr = 0;
                 return (*temp).ptr;
             }
         }

@@ -89,6 +89,10 @@ int main (int argc, char** argv){
     
     printf("sizeof int: %lu\n", sizeof(int));
     printf("sizeof metadata %lu\n", sizeof(metadata));
+    
+
+    //this testcase makes for an exact fit when allocating char* k,
+    //and also tests that the block splits when block size > requested block size
     int sizeof_i = 10;
     char* i = (char*)malloc(sizeof_i);
     printf("i: %p\n", i);

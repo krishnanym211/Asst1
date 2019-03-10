@@ -15,10 +15,6 @@ void* mymalloc(int size, char* file, int line);
 
 static char myBlock[4096];
 
-short firstMalloc;
-short mallocErr;
-short freeErr;
-
 typedef struct metadata{
     void* ptr;
     int size;
