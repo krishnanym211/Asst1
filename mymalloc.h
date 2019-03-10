@@ -26,5 +26,7 @@ typedef struct metadata{
 
 void* mymalloc(int size, char* file, int line);
 
+void myfree(void* toFree, char* file, int line);
+
 
 

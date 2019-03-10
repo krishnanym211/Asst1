@@ -18,23 +18,7 @@ int currIndex(metadata* front, metadata* block){
     return data;
 }
 
-/*//merges two or 3 consecutiive free blocks into 1
-void merge (){
-    metadata* temp = front;
-    metadata* prev;
-    while ((*temp).next != NULL){
-        if((*prev).inUse == 'n' && ((*temp).inUse == 'n'){
-            (*prev).size += (*temp).size + sizeof(metadata));
-            (*prev).next = (*temp).next;
-        }
-        prev = temp;
-        temp = (*temp).next;
-    }
-    merge();
-    return;
-}*/
-
-//returns bool indicating if malloc has been called yet
+//returns bool indicating if malloc has not been called yet
 int firstMalloc(){
 
 //typecasts the start of the array to metadata*
@@ -143,21 +127,59 @@ void* mymalloc(int size, char* file, int line){
     mallocErr = 1;
     return NULL;
 }
-/*void myfree(void* toFree, char* file, int line){
-    
-    freeErr = 0;
+
+/*//merges two or 3 consecutiive free blocks into 1
+void merge (){
     metadata* temp = front;
     metadata* prev;
-    
-    //there has been no previous malloc call
-    if(front == NULL){
-        fprintf();
-        freeErr = 1;
-    }
-    
-    while(){
-        
+    while ((*temp).next != NULL){
+        if((*prev).inUse == 'n' && ((*temp).inUse == 'n'){
+            (*prev).size += (*temp).size + sizeof(metadata));
+            (*prev).next = (*temp).next;
+        }
+        prev = temp;
+        temp = (*temp).next;
     }
     merge();
-    
+    return;
 }*/
+
+void myfree(void* toFree, char* file, int line){
+    
+    int freeErr = 0;
+
+    //there has been no previous malloc call
+    if(firstMalloc()){
+        fprintf(stderr, "Failed to free pointer: %p - No memory has been allocated using malloc\n", toFree);
+        freeErr = 1;
+        return;
+    }
+
+    if(toFree < (void*)myBlock || toFree > (void*)&myBlock[4095]){
+        fprintf(stderr, "Failed to free pointer: %p - address not in range\n", toFree);
+        return;
+    }
+
+    metadata* front = (metadata*)myBlock;
+
+    metadata* currBlock = front;
+    metadata* prevBlock;
+
+    while(currBlock != NULL){
+
+        if(currBlock->ptr == toFree && currBlock->inUse == 'y'){
+            currBlock->inUse = 'n';
+            printf("Freed pointer - %p\n", toFree);
+            return;
+        }
+
+        prevBlock = currBlock;
+        currBlock = currBlock->next;
+
+    }
+
+    fprintf(stderr, "Failed to free pointer: %p - Pointer was not allocated\n", toFree);
+    
+    // merge();
+    
+}

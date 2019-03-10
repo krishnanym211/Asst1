@@ -86,6 +86,15 @@ void testF(){
 }
 
 int main (int argc, char** argv){
+
+    //free tests
+    free(10);
+    char* ptr = (char*)malloc(10);
+    free(ptr);
+    ptr = (char*)malloc(10);
+    free(ptr - 20); //should not work, however myfree should search for address
+    ptr = (char*)malloc(10);
+    free(ptr - 1000); //should not work, myfree should say address out of range
     
     printf("sizeof int: %lu\n", sizeof(int));
     printf("sizeof metadata %lu\n", sizeof(metadata));
@@ -93,15 +102,15 @@ int main (int argc, char** argv){
 
     //this testcase makes for an exact fit when allocating char* k,
     //and also tests that the block splits when block size > requested block size
-    int sizeof_i = 10;
-    char* i = (char*)malloc(sizeof_i);
-    printf("i: %p\n", i);
+    // int sizeof_i = 10;
+    // char* i = (char*)malloc(sizeof_i);
+    // printf("i: %p\n", i);
 
-    char* j = (char*)malloc(4013);
-    printf("j: %p\n", j);
+    // char* j = (char*)malloc(4013);
+    // printf("j: %p\n", j);
 
-    char* k = (char*)malloc(1);
-    printf("k: %p\n", k);
+    // char* k = (char*)malloc(1);
+    // printf("k: %p\n", k);
 
 
     return 0;
