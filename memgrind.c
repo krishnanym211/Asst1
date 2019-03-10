@@ -104,6 +104,5 @@ int main (int argc, char** argv){
     printf("k: %p\n", k);
 
 
-    printf("Expected offset of pointers is achieved: %d\n", (i == (j - sizeof(metadata) - sizeof_i)));
     return 0;
 }

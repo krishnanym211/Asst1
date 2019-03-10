@@ -3,11 +3,9 @@
 
 #include "mymalloc.h"
 
-metadata* front;
-
 //returns the last index of the block called on
 //returns index of block
-int currIndex(metadata* block){
+int currIndex(metadata* front, metadata* block){
     metadata* temp = front;
     int data = 0;
     //while the current block is not the block to count till
@@ -54,6 +52,7 @@ int firstMalloc(){
 void* mymalloc(int size, char* file, int line){
 
     int mallocErr = 0;
+
     //if allocation size is equal to or less than 0, thats not valid
     if(size <= 0){
         fprintf(stderr,"ERROR: Must allocate more than 0 bytes\n");
@@ -66,10 +65,12 @@ void* mymalloc(int size, char* file, int line){
         return NULL;
     }
     
+    //initialize front pointer to first block in array
+    metadata* front = (metadata*)myBlock;
+
     //incase this is the first time malloc has been called
     if(firstMalloc()){
         printf("First malloc\n");
-        front = (metadata*)myBlock;
         (*front).inUse = 'y';
         (*front).size = size;
         (*front).ptr = &myBlock[(sizeof(metadata))];
@@ -102,7 +103,7 @@ void* mymalloc(int size, char* file, int line){
             if((*temp).size == size){
                 printf("Found memory block of exact fit\n");
                 (*temp).inUse = 'y';
-                (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
+                (*temp).ptr = &myBlock[currIndex(front, temp) + sizeof(metadata)];
                 return (*temp).ptr;
             }
             
@@ -112,7 +113,7 @@ void* mymalloc(int size, char* file, int line){
             // we should allocate temp - there is no better fit
             // implement this if statement
 
-            // if(currIndex(temp) + sizeof(metadata)*2 + size + 1 > 4096){
+            // if(currIndex(front, temp) + sizeof(metadata)*2 + size + 1 > 4096){
 
             // }
 
@@ -120,9 +121,9 @@ void* mymalloc(int size, char* file, int line){
             //after requested block is allocated, create newBlock to fill space
             if((*temp).size >= (size + sizeof(metadata) + 1)){
                 //create new block and fill structure
-                metadata* newBlock = (metadata*)(&myBlock[currIndex(temp)+sizeof(metadata)+size]);
+                metadata* newBlock = (metadata*)(&myBlock[currIndex(front, temp)+sizeof(metadata)+size]);
                 (*newBlock).next = (*temp).next;
-                (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
+                (*temp).ptr = &myBlock[currIndex(front, temp) + sizeof(metadata)];
                 (*temp).next = newBlock;
                 (*temp).inUse = 'y';
                 //subtract the size of the space requested and metadata from previous size to find the size of new block
@@ -130,7 +131,7 @@ void* mymalloc(int size, char* file, int line){
                 (*temp).size = size;
                 //how do i knwo the size of the memory for the new block. calculate each time?
                 (*newBlock).inUse = 'n';
-                (*newBlock).ptr = &myBlock[currIndex(newBlock)+sizeof(metadata)];
+                (*newBlock).ptr = &myBlock[currIndex(front, newBlock)+sizeof(metadata)];
                 return (*temp).ptr;
             }
         }
