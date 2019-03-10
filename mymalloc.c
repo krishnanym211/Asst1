@@ -85,7 +85,7 @@ void* mymalloc(int size, char* file, int line){
     
     while(temp != NULL) {
         
-        if((*temp).inUse == 'n'){
+        if((*temp).inUse == 'n' && (*temp).size >= size){
 
             //incase current block exactly fits size of reuested amount
             if((*temp).size == size){
@@ -96,9 +96,19 @@ void* mymalloc(int size, char* file, int line){
                 return (*temp).ptr;
             }
             
+            //size of temp block is greater than size of requested alloc
+
+            // if we are within sizeOfMinimumBlock ( i.e. sizeof(metadata) + 1) of the end of the array,
+            // we should allocate temp - there is no better fit
+            // implement this if statement
+
+            // if(currIndex(temp) + sizeof(metadata)*2 + size + 1 > 4096){
+
+            // }
+
             //incase first fit block is bigger than the size requested
             //after requested block is allocated, create newBlock to fill space
-            if((sizeof(metadata)*2+1+size) < (*temp).size){
+            if((*temp).size >= (size + sizeof(metadata) + 1)){
                 //create new block and fill structure
                 metadata* newBlock = (metadata*)(&myBlock[currIndex(temp)+sizeof(metadata)+size]);
                 (*newBlock).next = (*temp).next;
@@ -115,6 +125,7 @@ void* mymalloc(int size, char* file, int line){
                 return (*temp).ptr;
             }
         }
+
         temp = (*temp).next;
     }
     //for when there is no sufficient block of memory for requested memory, returns null to the user

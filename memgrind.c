@@ -89,12 +89,17 @@ int main (int argc, char** argv){
     
     printf("sizeof int: %lu\n", sizeof(int));
     printf("sizeof metadata %lu\n", sizeof(metadata));
-    char* i = (char*)malloc(10);
+    int sizeof_i = 10;
+    char* i = (char*)malloc(sizeof_i);
     printf("i: %p\n", i);
 
-    char* j = (char*)malloc(4038);
+    char* j = (char*)malloc(4013);
     printf("j: %p\n", j);
 
-    printf("Expected offset of pointers is achieved: %d\n", (i == (j - sizeof(metadata) - 10)));
+    char* k = (char*)malloc(1);
+    printf("k: %p\n", k);
+
+
+    printf("Expected offset of pointers is achieved: %d\n", (i == (j - sizeof(metadata) - sizeof_i)));
     return 0;
 }
