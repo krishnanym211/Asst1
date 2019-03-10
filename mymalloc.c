@@ -84,30 +84,36 @@ void* mymalloc(int size, char* file, int line){
     metadata* prev;
     
     while(temp != NULL) {
-        //incase current block exactly fits size of reuested amount
-        if((*temp).inUse == 'n' && (*temp).size == size){
-            printf("Found memory block of exact fit\n");
-            (*temp).inUse = 'y';
-            mallocErr = 0;
-            (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
-            return (*temp).ptr;
-        }
-        //incase first fit block is bigger than the size requested
-        if((*temp).inUse == 'n' && (*temp).size > (sizeof(metadata)*2+1+size)){
-            //create new block and fill structure
-            metadata* newBlock = (metadata*)(&myBlock[currIndex(temp)+sizeof(metadata)+size]);
-            (*newBlock).next = (*temp).next;
-            (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
-            (*temp).next = newBlock;
-            (*temp).inUse = 'y';
-            //subtract the size of the space requested and metadata from previous size to find the size of new block
-            (*newBlock).size = ((*temp).size - size - sizeof(metadata));
-            (*temp).size = size;
-            //how do i knwo the size of the memory for the new block. calculate each time?
-            (*newBlock).inUse = 'n';
-            (*newBlock).ptr = &myBlock[currIndex(newBlock)+sizeof(metadata)];
-            mallocErr = 0;
-            return (*temp).ptr;
+        
+        if((*temp).inUse == 'n'){
+
+            //incase current block exactly fits size of reuested amount
+            if((*temp).size == size){
+                printf("Found memory block of exact fit\n");
+                (*temp).inUse = 'y';
+                mallocErr = 0;
+                (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
+                return (*temp).ptr;
+            }
+            
+            //incase first fit block is bigger than the size requested
+            //after requested block is allocated, create newBlock to fill space
+            if((sizeof(metadata)*2+1+size) < (*temp).size){
+                //create new block and fill structure
+                metadata* newBlock = (metadata*)(&myBlock[currIndex(temp)+sizeof(metadata)+size]);
+                (*newBlock).next = (*temp).next;
+                (*temp).ptr = &myBlock[currIndex(temp) + sizeof(metadata)];
+                (*temp).next = newBlock;
+                (*temp).inUse = 'y';
+                //subtract the size of the space requested and metadata from previous size to find the size of new block
+                (*newBlock).size = ((*temp).size - size - sizeof(metadata));
+                (*temp).size = size;
+                //how do i knwo the size of the memory for the new block. calculate each time?
+                (*newBlock).inUse = 'n';
+                (*newBlock).ptr = &myBlock[currIndex(newBlock)+sizeof(metadata)];
+                mallocErr = 0;
+                return (*temp).ptr;
+            }
         }
         temp = (*temp).next;
     }
