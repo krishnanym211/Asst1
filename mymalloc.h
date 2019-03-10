@@ -4,11 +4,14 @@
 #include <string.h>
 #include <time.h>
 
-#ifndef mymalloc_h
-#define mymalloc_h
+//#ifndef mymalloc_h
+//#define mymalloc_h
 
 #define malloc(x) mymalloc(x,__FILE__,__LINE__)
 #define free(x) myfree(x,__FILE__,__LINE__)
+
+//#endif
+
 
 static char myBlock[4096];
 
@@ -23,4 +26,3 @@ typedef struct metadata{
     char inUse;
 }metadata;
 
-#endif
