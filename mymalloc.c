@@ -131,19 +131,34 @@ void* mymalloc(int size, char* file, int line){
     return NULL;
 }
 
-//merges two or 3 consecutiive free blocks into 1
+//merges two or 3 consecutive free blocks into 1
 void merge (){
     metadata* front = (metadata*)myBlock;
     metadata* temp = front;
-    while ((*temp).next != NULL){
-        if(((*temp).inUse == 'n') && ((*(*temp).next).inUse == 'n')){
-            (*temp).size += (*(*temp).next).size + sizeof(metadata);
-            (*temp).next = (*(*temp).next).next;
-            break;
+    while (temp){
+        if(temp->next == NULL){
+            //last block - no following block to merge with
+            return;
+        }
+
+        if(temp->inUse == 'n'){
+
+            //checks for 3 consecutive not inUse blocks
+            if(temp->next->inUse == 'n' && temp->next->next != NULL && temp->next->next->inUse == 'n'){
+                temp->size += temp->next->size + temp->next->next->size + 2*sizeof(metadata);
+                temp->next = temp->next->next->next;
+                return;
+            }
+
+            //checks for 2 consecutive not inUse blocks
+            if(temp->next->inUse == 'n'){
+                temp->size += temp->next->size + sizeof(metadata);
+                temp->next = temp->next->next;
+                return;
+            }
         }
         temp = (*temp).next;
     }
-    merge();
     return;
 }
 
