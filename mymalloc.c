@@ -54,7 +54,7 @@ void* mymalloc(int size, char* file, int line){
 
     //incase this is the first time malloc has been called
     if(firstMalloc()){
-        printf("First malloc\n");
+        // printf("First malloc\n");
         front = (metadata*)myBlock;
         (*front).inUse = 'y';
         (*front).size = size;
@@ -126,7 +126,7 @@ void* mymalloc(int size, char* file, int line){
         temp = (*temp).next;
     }
     //for when there is no sufficient block of memory for requested memory, returns null to the user
-    fprintf(stderr, "ERROR: Finished searching memory - not enough space for allocation\n");
+    fprintf(stderr, "ERROR: Finished searching memory - not enough space for allocation (%d bytes)\n", size);
     mallocErr = 1;
     return NULL;
 }

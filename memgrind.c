@@ -107,24 +107,164 @@ void deleteArrayItem( int index, int length, char ** array){
      return total/100;
  }
 
+void testDLogic(){
+
+    char* mallocPtrs[100] = { NULL };
+    int mallocCount = 0;
+    int operation;
+
+    int mallocSize = 0;
+    char* ptr;
+
+    //if our random int generator returns 0 call
+    //malloc, else call free
+
+    loop: while(mallocCount < 50){
+        operation = rand_lim(0, 1);
+        if(operation == 0){
+            //call malloc
+            mallocSize = rand_lim(1, 64);
+            ptr = (char*)malloc(sizeof(char)*mallocSize);
+            // printf("Malloced ptr: %p\n", ptr);
+            mallocPtrs[mallocCount] = ptr;
+            mallocCount++;
+        }
+        else{
+            //call free
+            //find ptr to free
+            int i;
+            for(i = 0; i < 50; i++){
+                if(mallocPtrs[i]){
+                    //free first non-NULL pointer and continue loop
+                    free(mallocPtrs[i]);
+                    // printf("Freed ptr: %p\n", mallocPtrs[i]);
+                    mallocPtrs[i] = NULL;
+                    goto loop;
+                }
+            }
+        }
+
+    }
+
+    //free remaining pointers
+    int i;
+    for(i = 0; i < 50; i++){
+        if(mallocPtrs[i]){
+            free(mallocPtrs[i]);
+            // printf("Freed ptr: %p\n", mallocPtrs[i]);
+            mallocPtrs[i] = NULL;
+        }
+    }
+}
+
+
 int testD(){
-	return 0;
+
+    int diffTime = 0;
+    int totalTime = 0;
+    clock_t start;
+
+    int count = 0;
+
+    while (count < 100){
+        start = clock();
+        testDLogic();
+        diffTime = clock() - start;
+        totalTime+=diffTime;
+        count++;
+     }
+     return totalTime/100;
 }
+
+void testELogic(){
+
+    char* mallocPtrs[100] = { NULL };
+    int mallocCount = 0;
+    int operation;
+
+    int mallocSize = 0;
+    char* ptr;
+
+    //if our random int generator returns 0 call
+    //malloc, else call free
+
+    loop: while(mallocCount < 25){
+        operation = rand_lim(0, 1);
+        if(operation == 0){
+            //call malloc
+            mallocSize = rand_lim(1, 100);
+            ptr = (char*)malloc(sizeof(char)*mallocSize);
+            // printf("Malloced ptr: %p\n", ptr);
+            mallocPtrs[mallocCount] = ptr;
+            mallocCount++;
+        }
+        else{
+            //call free
+            //find ptr to free
+            int i;
+            for(i = 0; i < 50; i++){
+                if(mallocPtrs[i]){
+                    //free first non-NULL pointer and continue loop
+                    //use random function to decide if we 
+                    // try to free real ptr or offset of ptr (not allocated)
+                    //tests error checking
+                    //tests multiple freeing of same pointer
+                    int j;
+                    for(j = 0; j < 3; j++){
+                        free(mallocPtrs[i]+rand_lim(0, 1));
+                    }
+                    // printf("Freed ptr: %p\n", mallocPtrs[i]);
+                    mallocPtrs[i] = NULL;
+                    goto loop;
+                }
+            }
+        }
+
+    }
+
+    //free remaining pointers
+    int i;
+    for(i = 0; i < 50; i++){
+        if(mallocPtrs[i]){
+            free(mallocPtrs[i]);
+            // printf("Freed ptr: %p\n", mallocPtrs[i]);
+            mallocPtrs[i] = NULL;
+        }
+    }
+
+}
+
+
 int testE(){
-	return 0;
+
+    int diffTime = 0;
+    int totalTime = 0;
+    clock_t start;
+
+    int count = 0;
+
+    while (count < 100){
+        start = clock();
+        testELogic();
+        diffTime = clock() - start;
+        totalTime+=diffTime;
+        count++;
+     }
+     return totalTime/100;
+
 }
+
 int testF(){
 	return 0;
 }
 
 int main (){
-    printf("Average Run Time:");
+    printf("Average Run Time:\n");
     printf("TestA: %d microseconds\n", testA());
     printf("TestB: %d microseconds\n", testB());
-    
     printf("TestC: %d microseconds\n", testC());
-    //printf("TestD: %d microseconds\n", testD());
-    //printf("TestE: %d microseconds\n", testE());
+    printf("TestD: %d microseconds\n", testD());
+    printf("TestE: %d microseconds\n", testE());
     //printf("TestF: %d microseconds\n", testF());
     return 0;
     
