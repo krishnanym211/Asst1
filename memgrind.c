@@ -7,7 +7,7 @@
 #include "mymalloc.h"
 
 //malloc() 1 byte and immediately free it - do this 150 times
- int testA(){
+int testA(){
      int count = 0;
      int total = 0;
      while (count < 100){
@@ -113,19 +113,56 @@ int testD(){
 int testE(){
 	return 0;
 }
+
+//
 int testF(){
-	return 0;
+    int count = 0;
+    int total = 0;
+    
+    int i;
+    int y;
+    int z =1;
+    int freeCounter = 0;
+    int successCounter = 0;
+    int totalMallocs = 0;
+    long avg = 0;
+    char * ptr = NULL;
+    
+    while(count<100){
+        clock_t start = clock(), diff;
+        
+        for (i = 0; i<50;i++){
+            z++;
+            ptr = malloc(z);
+            totalMallocs++;
+            if (ptr != NULL){
+                successCounter++;
+                free(ptr);
+                freeCounter++;
+            }
+        }
+        z = 0;
+        
+        diff = clock() - start;
+        total+=diff;
+        count++;
+    }
+    printf("Total mallocs: %d\n", totalMallocs);
+    printf("Successful mallocs: %d\n", successCounter);
+    printf("Frees: %d\n", freeCounter);
+    printf("AVG Time Elasped: %d microseconds.\nTEST PASSED\n", total/100);
+    
+	return total/100;
 }
 
 int main (){
     printf("Average Run Time:");
     printf("TestA: %d microseconds\n", testA());
     printf("TestB: %d microseconds\n", testB());
-    
     printf("TestC: %d microseconds\n", testC());
     //printf("TestD: %d microseconds\n", testD());
     //printf("TestE: %d microseconds\n", testE());
-    //printf("TestF: %d microseconds\n", testF());
+    printf("TestF: %d microseconds\n", testF());
     return 0;
     
     

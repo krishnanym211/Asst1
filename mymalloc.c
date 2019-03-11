@@ -131,7 +131,7 @@ void* mymalloc(int size, char* file, int line){
     return NULL;
 }
 
-//merges two or 3 consecutive free blocks into 1
+/*//merges two or 3 consecutive free blocks into 1
 void merge (){
     metadata* front = (metadata*)myBlock;
     metadata* temp = front;
@@ -156,6 +156,32 @@ void merge (){
                 temp->next = temp->next->next;
                 return;
             }
+        }
+        temp = (*temp).next;
+    }
+    return;
+}*/
+
+//merges two or 3 consecutiive free blocks into 1
+void merge (metadata* head, metadata* tail){
+    (*head).size += (*tail).size + sizeof(metadata);
+    (*head).next = (*tail).next;
+    tail = NULL;
+    return;
+}
+
+void mergeCheck (){
+    metadata* front = (metadata*)myBlock;
+    metadata* temp = front;
+    if(front == NULL){
+        return;
+    }
+    
+    while ((*temp).next != NULL){
+        if(((*temp).inUse == 'n') && ((*(*temp).next).inUse == 'n')){
+            merge(temp,temp->next);
+            mergeCheck();
+            continue;
         }
         temp = (*temp).next;
     }
@@ -199,7 +225,7 @@ void myfree(void* toFree, char* file, int line){
 
     fprintf(stderr, "Failed to free pointer: %p - Pointer was not allocated\n", toFree);
     
-    merge();
+    mergeCheck();
     
     return;
 }
