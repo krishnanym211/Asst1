@@ -139,11 +139,11 @@ void merge (){
         if(((*temp).inUse == 'n') && ((*(*temp).next).inUse == 'n')){
             (*temp).size += (*(*temp).next).size + sizeof(metadata);
             (*temp).next = (*(*temp).next).next;
-            (*temp).next = NULL;
+            break;
         }
         temp = (*temp).next;
     }
-    //merge();
+    merge();
     return;
 }
 
