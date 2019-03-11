@@ -96,7 +96,7 @@ void deleteArrayItem( int index, int length, char ** array){
                  mallocIndex--;
              }
          }
-         while(mallocIndex >= 0){
+         while(mallocIndex > 0){
              free(input[mallocIndex]);
             mallocIndex--;
          }
@@ -121,6 +121,7 @@ int main (){
     printf("Average Run Time:");
     printf("TestA: %d microseconds\n", testA());
     printf("TestB: %d microseconds\n", testB());
+    
     printf("TestC: %d microseconds\n", testC());
     //printf("TestD: %d microseconds\n", testD());
     //printf("TestE: %d microseconds\n", testE());

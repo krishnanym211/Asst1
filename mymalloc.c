@@ -3,6 +3,8 @@
 
 #include "mymalloc.h"
 
+metadata* front;
+
 //returns the last index of the block called on
 //returns index of block
 int currIndex(metadata* front, metadata* block){
@@ -50,11 +52,12 @@ void* mymalloc(int size, char* file, int line){
     }
     
     //initialize front pointer to first block in array
-    metadata* front = (metadata*)myBlock;
+    //metadata* front = (metadata*)myBlock;
 
     //incase this is the first time malloc has been called
     if(firstMalloc()){
         printf("First malloc\n");
+        front = (metadata*)myBlock;
         (*front).inUse = 'y';
         (*front).size = size;
         (*front).ptr = &myBlock[(sizeof(metadata))];
@@ -119,7 +122,9 @@ void* mymalloc(int size, char* file, int line){
                 return (*temp).ptr;
             }
         }
-
+        if((*temp).next == NULL){
+            break;
+        }
         temp = (*temp).next;
     }
     //for when there is no sufficient block of memory for requested memory, returns null to the user
@@ -129,30 +134,30 @@ void* mymalloc(int size, char* file, int line){
 }
 
 //merges two or 3 consecutiive free blocks into 1
-void merge (metadata* front){
+void merge (){
     metadata* temp = front;
     metadata* prev;
     while ((*temp).next != NULL){
         if(((*prev).inUse == 'n') && ((*temp).inUse == 'n')){
             (*prev).size += (*temp).size + sizeof(metadata);
-            (*prev).ptr = &myBlock[currIndex(front, prev) + sizeof(metadata)];
             (*prev).next = (*temp).next;
+            temp = NULL;
         }
         prev = temp;
         temp = (*temp).next;
     }
-    merge(front);
+    //merge();
     return;
 }
 
 void myfree(void* toFree, char* file, int line){
     
-    int freeErr = 0;
+    //int freeErr = 0;
 
     //there has been no previous malloc call
     if(firstMalloc()){
         fprintf(stderr, "Failed to free pointer: %p - No memory has been allocated using malloc\n", toFree);
-        freeErr = 1;
+        //freeErr = 1;
         return;
     }
 
@@ -161,7 +166,7 @@ void myfree(void* toFree, char* file, int line){
         return;
     }
 
-    metadata* front = (metadata*)myBlock;
+    //metadata* front = (metadata*)myBlock;
 
     metadata* currBlock = front;
     metadata* prevBlock;
@@ -171,6 +176,7 @@ void myfree(void* toFree, char* file, int line){
         if(currBlock->ptr == toFree && currBlock->inUse == 'y'){
             currBlock->inUse = 'n';
              //UNCOMMENT printf("Freed pointer - %p\n", toFree);
+            
             return;
         }
 
@@ -181,6 +187,7 @@ void myfree(void* toFree, char* file, int line){
 
     fprintf(stderr, "Failed to free pointer: %p - Pointer was not allocated\n", toFree);
     
-    merge(front);
+    merge();
+    
     return;
 }
