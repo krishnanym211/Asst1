@@ -3,8 +3,6 @@
 
 #include "mymalloc.h"
 
-metadata* front;
-
 //returns the last index of the block called on
 //returns index of block
 int currIndex(metadata* front, metadata* block){
@@ -52,7 +50,7 @@ void* mymalloc(int size, char* file, int line){
     }
     
     //initialize front pointer to first block in array
-    //metadata* front = (metadata*)myBlock;
+    metadata* front = (metadata*)myBlock;
 
     //incase this is the first time malloc has been called
     if(firstMalloc()){
@@ -135,15 +133,14 @@ void* mymalloc(int size, char* file, int line){
 
 //merges two or 3 consecutiive free blocks into 1
 void merge (){
+    metadata* front = (metadata*)myBlock;
     metadata* temp = front;
-    metadata* prev;
     while ((*temp).next != NULL){
-        if(((*prev).inUse == 'n') && ((*temp).inUse == 'n')){
-            (*prev).size += (*temp).size + sizeof(metadata);
-            (*prev).next = (*temp).next;
-            temp = NULL;
+        if(((*temp).inUse == 'n') && ((*(*temp).next).inUse == 'n')){
+            (*temp).size += (*(*temp).next).size + sizeof(metadata);
+            (*temp).next = (*(*temp).next).next;
+            (*temp).next = NULL;
         }
-        prev = temp;
         temp = (*temp).next;
     }
     //merge();
@@ -166,7 +163,7 @@ void myfree(void* toFree, char* file, int line){
         return;
     }
 
-    //metadata* front = (metadata*)myBlock;
+    metadata* front = (metadata*)myBlock;
 
     metadata* currBlock = front;
     metadata* prevBlock;
